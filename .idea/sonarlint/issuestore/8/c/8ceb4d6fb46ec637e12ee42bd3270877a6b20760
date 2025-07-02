@@ -1,0 +1,5 @@
+
+½
+java:S6204""zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(ª™¨¹8«Õ£ü2J$65e5c906-2ecb-4829-b960-bc0065be6c0f
+q
+java:S1874 ".Remove this use of "stream"; it is deprecated.(ıÖùÁ8„«Õ£ü2J$0af4e91a-7b8d-4e06-824c-34a74669641e

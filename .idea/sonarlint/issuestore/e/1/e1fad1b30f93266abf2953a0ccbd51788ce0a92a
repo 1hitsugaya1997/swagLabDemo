@@ -1,0 +1,27 @@
+
+Ó
+java:S3577"Rename class "HomePageTestBase" to match the regular expression: '^((Test|IT)[a-zA-Z0-9_]+|[A-Z][a-zA-Z0-9_]*(Test|Tests|TestCase|IT|ITCase))$'(“ÊúÙ8ÀÇ¡Ğü2J$e82cb5b0-8112-44e3-8f2e-278bd47f4dc2
+a
+java:S5786'"Remove this 'public' modifier.(ÒÀÇ8ÀÇ¡Ğü2J$13a04f54-b8b9-4200-a7cc-c02ff97cbf17
+a
+java:S5786I"Remove this 'public' modifier.(üÓß¾8ÀÇ¡Ğü2J$55b35063-74ac-49ca-8192-bdf4fa00dbf6
+b
+java:S5786‚"Remove this 'public' modifier.(¥±Ç“8ÀÇ¡Ğü2J$5d82fa97-a9e1-448f-8e57-581a654323c6
+g
+java:S5786"Remove this 'public' modifier.(–ËÄêüÿÿÿÿ8ÀÇ¡Ğü2J$ebb4511c-3305-41d7-a3dd-95cf8d9063e5
+b
+java:S5786Â"Remove this 'public' modifier.(ğ×ÈÄ8ÀÇ¡Ğü2J$74fdf8f7-08ed-4d7b-898f-d485c870b5e9
+g
+java:S5786ß"Remove this 'public' modifier.(Ş‘„Âşÿÿÿÿ8ÀÇ¡Ğü2J$fd36d4ec-d996-487b-86ff-50c17127c40d
+g
+java:S5786‡"Remove this 'public' modifier.(ÿ…ÀÉúÿÿÿÿ8ÀÇ¡Ğü2J$87003361-d64e-43f5-bb6b-b6aba0ec5c3d
+b
+java:S5786±"Remove this 'public' modifier.(úà¥ü8ÀÇ¡Ğü2J$b8476d61-1f5b-47dd-a473-01bacac2cec4
+g
+java:S5786Ú"Remove this 'public' modifier.(æÿ€Ïıÿÿÿÿ8ÀÇ¡Ğü2J$5adef26a-b0d2-4347-9802-363fcc94b493
+a
+java:S5786"Remove this 'public' modifier.(“ÊúÙ8´°¤Ğü2J$fe5f4734-b28b-478b-830f-e0ca90d9dc74
+‹
+java:S1128"CRemove this unused import 'com.codeborne.selenide.SelenideElement'.(î”­ÿÿÿÿÿ8à§¥Ğü2J$09f41021-fbba-4b25-bb9b-5c7146897315
+ƒ
+java:S1128"@Remove this unused import 'com.codeborne.selenide.Selenide.$$x'.(×æ†Œ8à§¥Ğü2J$bd7a831c-dd45-4f66-ba75-67cff74fa988
