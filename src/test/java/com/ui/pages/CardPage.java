@@ -12,19 +12,19 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class CardPage {
 
-    // 🔍 Элементы
+    // 🔍 Элементы страницы корзины
     private final SelenideElement cartHeader = $(byXpath("//span[text()='Your Cart']"));
     private final ElementsCollection cartItems = $$(byXpath("//div[@class='cart_item']"));
     private final SelenideElement checkoutButton = $(byXpath("//button[@id='checkout']"));
-    private final SelenideElement ContinueShoppingButton = $(byXpath("//button[@id='continue-shopping']"));
-    private final SelenideElement menuButton    = $(byXpath("//button[text()='Open Menu']"));
+    private final SelenideElement continueShoppingButton = $(byXpath("//button[@id='continue-shopping']"));
+    private final SelenideElement menuButton = $(byXpath("//button[text()='Open Menu']"));
 
-    // 🔍 Динамический локатор для кнопки "Remove"
+    // 🔍 Динамический локатор кнопки "Remove" для товара по имени
     private SelenideElement getRemoveButton(String itemName) {
         return $(byXpath("//div[text()='" + itemName + "']/ancestor::div[@class='cart_item']//button[text()='Remove']"));
     }
 
-    // ✅ Проверка, что мы на странице корзины
+    // ✅ Проверка: на странице корзины
     public boolean isOnCartPage() {
         return cartHeader.shouldBe(visible).exists();
     }
@@ -36,27 +36,32 @@ public class CardPage {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Удалить товар по имени
+    // ✅ Удалить товар из корзины по имени
     public void removeItemFromCart(String itemName) {
         getRemoveButton(itemName).shouldBe(visible).click();
     }
 
-    // ✅ Перейти к оформлению
+    // ✅ Нажать кнопку "Checkout" (оформление заказа)
     public void clickCheckout() {
         checkoutButton.shouldBe(visible).click();
     }
 
-    // ✅ Клик по меню
+    // ✅ Нажать кнопку "Continue Shopping" (продолжить покупки)
+    public void clickContinueShopping() {
+        continueShoppingButton.shouldBe(visible).click();
+    }
+
+    // ✅ Открыть меню
     public void clickOpenMenu() {
         menuButton.shouldBe(visible).click();
     }
 
-    // ✅ Убедиться, что пункт меню виден
+    // ✅ Проверить, что пункт меню виден
     public void shouldSeeMenuItem(String itemName) {
         $x("//a[@class='bm-item menu-item' and text()='" + itemName + "']").shouldBe(visible);
     }
 
-    // ✅ Клик по пункту меню
+    // ✅ Кликнуть по пункту меню
     public void clickMenuItem(String itemName) {
         $x("//a[@class='bm-item menu-item' and text()='" + itemName + "']").shouldBe(visible).click();
     }

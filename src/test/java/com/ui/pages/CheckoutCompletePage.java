@@ -8,22 +8,29 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class CheckoutCompletePage {
 
-    // 🔍 Элементы
-    private final SelenideElement completeHeader = $(byXpath("//h2[text()='Thank you for your order!']"));
-    private final SelenideElement completeMessage = $(byXpath("//div[@class='complete-text']"));
-    private final SelenideElement backHomeButton = $(byXpath("//button[@id='back-to-products']"));
+    // 🔍 Заголовок страницы завершения заказа
+    private static final String COMPLETE_HEADER_XPATH = "//h2[text()='Thank you for your order!']";
+    private final SelenideElement completeHeader = $x(COMPLETE_HEADER_XPATH);
 
-    // ✅ Проверка, что мы на странице завершения оформления
+    // 🔍 Сообщение об успешном заказе
+    private static final String COMPLETE_MESSAGE_XPATH = "//div[@class='complete-text']";
+    private final SelenideElement completeMessage = $x(COMPLETE_MESSAGE_XPATH);
+
+    // 🔍 Кнопка возврата на главную
+    private static final String BACK_HOME_BUTTON_XPATH = "//button[@id='back-to-products']";
+    private final SelenideElement backHomeButton = $x(BACK_HOME_BUTTON_XPATH);
+
+    // ✅ Проверка, что мы на странице завершения заказа
     public boolean isOnCompletePage() {
         return completeHeader.shouldBe(visible).exists();
     }
 
-    // ✅ Получить текст сообщения "Thank you"
+    // ✅ Получить текст благодарности
     public String getCompleteMessage() {
         return completeMessage.shouldBe(visible).getText();
     }
 
-    // ✅ Клик по кнопке "Back Home"
+    // ✅ Нажать кнопку "Back Home"
     public void clickBackHome() {
         backHomeButton.shouldBe(visible).click();
     }
