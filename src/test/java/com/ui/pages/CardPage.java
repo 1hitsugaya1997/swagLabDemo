@@ -15,7 +15,7 @@ public class CardPage {
     // 🔍 Элементы
     private final SelenideElement cartHeader = $(byXpath("//span[text()='Your Cart']"));
     private final ElementsCollection cartItems = $$(byXpath("//div[@class='cart_item']"));
-    private final SelenideElement checkoutButton = $(byXpath("//button[@id='checkout']//button[@id='checkout']"));
+    private final SelenideElement checkoutButton = $(byXpath("//button[@id='checkout']"));
     private final SelenideElement ContinueShoppingButton = $(byXpath("//button[@id='continue-shopping']"));
     private final SelenideElement menuButton    = $(byXpath("//button[text()='Open Menu']"));
 
