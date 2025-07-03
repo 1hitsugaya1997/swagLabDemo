@@ -1,2 +1,19 @@
 
-]	java:S125"<This block of commented-out lines of code should be removed.(á×©¶ıÿÿÿÿ8€½ç¤ü2
+Ø
+java:S3577"Rename class "CardPageTestBase" to match the regular expression: '^((Test|IT)[a-zA-Z0-9_]+|[A-Z][a-zA-Z0-9_]*(Test|Tests|TestCase|IT|ITCase))$'(òã¯ûÿÿÿÿ8¿ø›Òü2J$80a35982-031c-4b7d-a09f-81b6918105f1
+f
+java:S5786#"Remove this 'public' modifier.(¯­ˆ•ÿÿÿÿÿ8¿ø›Òü2J$cbca7666-5547-4c2d-ad86-a9eba096a1a6
+a
+java:S57868"Remove this 'public' modifier.(Öš²€8¿ø›Òü2J$e1ebaf7d-d4ce-4001-9c5a-b2cde01ba3b2
+f
+java:S5786["Remove this 'public' modifier.(¤é¢§úÿÿÿÿ8¿ø›Òü2J$b575f922-2949-48e4-813b-4a93f47dbb3d
+f
+java:S5786y"Remove this 'public' modifier.(¯ß¯úÿÿÿÿ8¿ø›Òü2J$d0805833-dcce-4c84-9100-415ebc212b1f
+b
+java:S5786"Remove this 'public' modifier.(ÙùŒ8¿ø›Òü2J$57d6a3c3-e5f5-476b-b437-437a79fe3d30
+f
+java:S5786"Remove this 'public' modifier.(òã¯ûÿÿÿÿ8¤’´Òü2J$bb6c122a-e7b6-4d15-97f0-b53bd174017a
+‚
+java:S1128"?Remove this unused import 'com.codeborne.selenide.Selenide.$x'.(„¢œ‘8º°Òü2J$2b8e95c4-ee95-45b2-85f7-ad0dba20bb44
+‡
+java:S1128"ERemove this unused import 'com.codeborne.selenide.Condition.visible'.(ê€í/8º°Òü2J$5d4fd2b0-3928-479e-b75f-01ee5c669719

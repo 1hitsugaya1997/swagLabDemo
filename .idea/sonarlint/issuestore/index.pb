@@ -678,3 +678,9 @@ r
 Ballure-results/a90573af-3bc1-4457-b151-443f73bc665e-container.json,6\9\6989afd3f3942148520ea2464367e152408b1b82
 r
 Ballure-results/5ea79eb9-268a-486e-b4bd-6f7a9d3d1aa6-container.json,e\4\e43b98e7ba50ebc17c23f53bfc8dfadc801878ec
+\
+,src/test/java/com/ui/pages/CheckoutPage.java,f\e\fe4036d2bb7acfc79162c2d81201ede6fbfd95cd
+d
+4src/test/java/com/ui/pages/CheckoutCompletePage.java,6\b\6bad8b572b496d497311787d36048b7862334383
+d
+4src/test/java/com/ui/pages/CheckoutOverviewPage.java,7\7\77527c535d91fdbc3ff676de4fbfc2b99011f570

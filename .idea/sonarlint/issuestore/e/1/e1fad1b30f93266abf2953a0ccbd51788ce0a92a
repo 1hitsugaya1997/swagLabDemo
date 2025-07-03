@@ -1,27 +1,27 @@
 
 Ó
-java:S3577"Rename class "HomePageTestBase" to match the regular expression: '^((Test|IT)[a-zA-Z0-9_]+|[A-Z][a-zA-Z0-9_]*(Test|Tests|TestCase|IT|ITCase))$'(“ÊúÙ8ÀÇ¡Ğü2J$e82cb5b0-8112-44e3-8f2e-278bd47f4dc2
+java:S3577"Rename class "HomePageTestBase" to match the regular expression: '^((Test|IT)[a-zA-Z0-9_]+|[A-Z][a-zA-Z0-9_]*(Test|Tests|TestCase|IT|ITCase))$'(“ÊúÙ8ÀÇ¡Ğü2J$d760226e-6a04-4a76-bd1a-7ccb5d69a2a2
 a
-java:S5786'"Remove this 'public' modifier.(ÒÀÇ8ÀÇ¡Ğü2J$13a04f54-b8b9-4200-a7cc-c02ff97cbf17
+java:S5786'"Remove this 'public' modifier.(ÒÀÇ8ÀÇ¡Ğü2J$951f087a-0c24-4622-ac02-8302b6d8c449
 a
-java:S5786I"Remove this 'public' modifier.(üÓß¾8ÀÇ¡Ğü2J$55b35063-74ac-49ca-8192-bdf4fa00dbf6
+java:S5786I"Remove this 'public' modifier.(üÓß¾8ÀÇ¡Ğü2J$aeea2dd9-3718-4717-b2b8-ffa1bc7850a7
 b
-java:S5786‚"Remove this 'public' modifier.(¥±Ç“8ÀÇ¡Ğü2J$5d82fa97-a9e1-448f-8e57-581a654323c6
+java:S5786‚"Remove this 'public' modifier.(¥±Ç“8ÀÇ¡Ğü2J$d59dcccb-5647-44b6-b7e7-f47619a4b38a
 g
-java:S5786"Remove this 'public' modifier.(–ËÄêüÿÿÿÿ8ÀÇ¡Ğü2J$ebb4511c-3305-41d7-a3dd-95cf8d9063e5
+java:S5786"Remove this 'public' modifier.(–ËÄêüÿÿÿÿ8ÀÇ¡Ğü2J$4258817a-886a-4e8d-8ba3-9aa4d3a2d1f7
 b
-java:S5786Â"Remove this 'public' modifier.(ğ×ÈÄ8ÀÇ¡Ğü2J$74fdf8f7-08ed-4d7b-898f-d485c870b5e9
+java:S5786Â"Remove this 'public' modifier.(ğ×ÈÄ8ÀÇ¡Ğü2J$f7c8e874-e51d-4faf-90f4-4737109f7ca5
 g
-java:S5786ß"Remove this 'public' modifier.(Ş‘„Âşÿÿÿÿ8ÀÇ¡Ğü2J$fd36d4ec-d996-487b-86ff-50c17127c40d
+java:S5786ß"Remove this 'public' modifier.(Ş‘„Âşÿÿÿÿ8ÀÇ¡Ğü2J$31b9af33-1cce-4d75-9882-dde37a69eb8f
 g
-java:S5786‡"Remove this 'public' modifier.(ÿ…ÀÉúÿÿÿÿ8ÀÇ¡Ğü2J$87003361-d64e-43f5-bb6b-b6aba0ec5c3d
+java:S5786‡"Remove this 'public' modifier.(ÿ…ÀÉúÿÿÿÿ8ÀÇ¡Ğü2J$d6e82dbd-aa99-4ca3-b92d-8a0f785f4bf8
 b
-java:S5786±"Remove this 'public' modifier.(úà¥ü8ÀÇ¡Ğü2J$b8476d61-1f5b-47dd-a473-01bacac2cec4
+java:S5786±"Remove this 'public' modifier.(úà¥ü8ÀÇ¡Ğü2J$cda11cdf-dd98-4da2-986b-0e6d066537df
 g
-java:S5786Ú"Remove this 'public' modifier.(æÿ€Ïıÿÿÿÿ8ÀÇ¡Ğü2J$5adef26a-b0d2-4347-9802-363fcc94b493
+java:S5786Ú"Remove this 'public' modifier.(æÿ€Ïıÿÿÿÿ8ÀÇ¡Ğü2J$50aa060f-0476-4041-b844-a996245f2c62
 a
-java:S5786"Remove this 'public' modifier.(“ÊúÙ8´°¤Ğü2J$fe5f4734-b28b-478b-830f-e0ca90d9dc74
+java:S5786"Remove this 'public' modifier.(“ÊúÙ8´°¤Ğü2J$482221e9-e010-45c5-8a00-97cc37e1f995
 ‹
-java:S1128"CRemove this unused import 'com.codeborne.selenide.SelenideElement'.(î”­ÿÿÿÿÿ8à§¥Ğü2J$09f41021-fbba-4b25-bb9b-5c7146897315
+java:S1128"CRemove this unused import 'com.codeborne.selenide.SelenideElement'.(î”­ÿÿÿÿÿ8à§¥Ğü2J$26595dc5-3056-4060-97ab-2a74ba12e5c6
 ƒ
-java:S1128"@Remove this unused import 'com.codeborne.selenide.Selenide.$$x'.(×æ†Œ8à§¥Ğü2J$bd7a831c-dd45-4f66-ba75-67cff74fa988
+java:S1128"@Remove this unused import 'com.codeborne.selenide.Selenide.$$x'.(×æ†Œ8à§¥Ğü2J$2d061805-5afc-421b-b413-e9be8b19a784
