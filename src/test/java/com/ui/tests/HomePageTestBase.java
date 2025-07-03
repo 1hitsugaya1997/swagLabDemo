@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -153,7 +154,7 @@ public class HomePageTestBase extends BaseTest {
     @Test
     @Severity(SeverityLevel.NORMAL)
     @Story("Проверка работы кнопки About")
-    @DisplayName("Переход по кнопке About должен вести на https://saucelabs.com/")
+    @DisplayName("Переход по кнопке About")
     public void shouldRedirectToSauceLabsPageViaAboutMenu() {
 
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
@@ -168,17 +169,18 @@ public class HomePageTestBase extends BaseTest {
 
         Allure.step("Переход по кнопке About и проверка URL", () -> {
             homePage.clickOpenMenu();
-            homePage.clickMenuItem("About");
 
-            var driver = WebDriverRunner.getWebDriver();
-            var windows = driver.getWindowHandles();
+            // Временно отключим ожидание загрузки полной страницы (важно!)
+            Selenide.executeJavaScript("window.stop();");
 
+            // Кликаем по элементу без ожидания рендеринга
+            SelenideElement aboutLink = $x("//a[text()='About']");
+            aboutLink.shouldBe(visible, Duration.ofSeconds(10)).click();
+
+            // Ждём открытия новой вкладки
+            var windows = WebDriverRunner.getWebDriver().getWindowHandles();
             if (windows.size() > 1) {
-                // Если новая вкладка открылась, переключаемся на неё
                 Selenide.switchTo().window(1);
-            } else {
-                // Иначе остаёмся в текущем окне
-                Selenide.switchTo().window(driver.getWindowHandle());
             }
 
             String currentUrl = WebDriverRunner.url();
