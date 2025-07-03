@@ -17,9 +17,10 @@ public class CheckoutPage {
     private final SelenideElement firstNameInput = $(byXpath("//input[@placeholder='First Name']"));
     private final SelenideElement LastNameInput = $(byXpath("//input[@placeholder='Last Name']"));
     private final SelenideElement ZipPostalCodeInput = $(byXpath("//input[@placeholder='Zip/Postal Code']"));
-    private final SelenideElement CancelButton = $(byXpath("//input[@data-test='cancel']"));
-    private final SelenideElement ContinueButton = $(byXpath("//input[@data-test='cancel']"));
+    private final SelenideElement CancelButton = $(byXpath("//button[@data-test='cancel']"));
+    private final SelenideElement ContinueButton = $(byXpath("//input[@data-test='continue']"));
     private final SelenideElement menuButton = $(byXpath("//button[text()='Open Menu']"));
+    private final SelenideElement cartButton    = $(byXpath("//a[@class='shopping_cart_link']"));
 
     // 🔍 Динамический локатор для кнопки "Remove"
     private SelenideElement getRemoveButton(String itemName) {
@@ -73,8 +74,9 @@ public class CheckoutPage {
         $x("//a[@class='bm-item menu-item' and text()='" + itemName + "']").shouldBe(visible).click();
     }
 
-
-
-
+    // ✅ Клик по корзине
+    public void clickCart() {
+        cartButton.shouldBe(visible).click();
+    }
 
     }
