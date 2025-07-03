@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Feature("Работа с корзиной")
 public class CardPageTestBase extends BaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(CardPageTestBase.class);
+    static final Logger logger = LoggerFactory.getLogger(CardPageTestBase.class);
 
     private final LoginPage loginPage = new LoginPage();
     private final HomePage homePage = new HomePage();
