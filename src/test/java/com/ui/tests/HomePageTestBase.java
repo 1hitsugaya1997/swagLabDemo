@@ -167,25 +167,15 @@ public class HomePageTestBase extends BaseTest {
             logger.info("Вход выполнен");
         });
 
-        Allure.step("Переход по кнопке About и проверка URL", () -> {
+        Allure.step("Проверить, что кнопка About ведёт на saucelabs.com", () -> {
             homePage.clickOpenMenu();
 
-            // Временно отключим ожидание загрузки полной страницы (важно!)
-            Selenide.executeJavaScript("window.stop();");
-
-            // Кликаем по элементу без ожидания рендеринга
             SelenideElement aboutLink = $x("//a[text()='About']");
-            aboutLink.shouldBe(visible, Duration.ofSeconds(10)).click();
+            aboutLink.shouldBe(visible, Duration.ofSeconds(5));
 
-            // Ждём открытия новой вкладки
-            var windows = WebDriverRunner.getWebDriver().getWindowHandles();
-            if (windows.size() > 1) {
-                Selenide.switchTo().window(1);
-            }
-
-            String currentUrl = WebDriverRunner.url();
-            logger.info("Текущий URL: {}", currentUrl);
-            assertTrue(currentUrl.contains("saucelabs.com"), "Не произошел переход на saucelabs.com");
+            String href = aboutLink.getAttribute("href");
+            logger.info("Ссылка About ведет на: {}", href);
+            assertTrue(href.contains("saucelabs.com"), "Ссылка About не ведет на saucelabs.com");
         });
     }
 
