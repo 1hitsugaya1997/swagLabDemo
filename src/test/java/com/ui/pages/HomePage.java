@@ -3,6 +3,7 @@ package com.ui.pages;
 import com.codeborne.selenide.SelenideElement;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
@@ -24,6 +25,7 @@ public class HomePage {
     private static final String LOGIN_PASSWORD_XPATH = "//input[@data-test='password']";
     private static final String LOGIN_SUBMIT_XPATH = "//input[@type='submit']";
     private static final String ITEM_CART_BUTTON_XPATH = "//div[text()='%s']/ancestor::div[@class='inventory_item']//button";
+    private static final String ABOUT_LINK_XPATH = "//a[text()='About']";
 
     // 🔍 Элементы
     private final SelenideElement title = $x(TITLE_XPATH);
@@ -127,4 +129,26 @@ public class HomePage {
         $x(LOGIN_PASSWORD_XPATH).shouldBe(visible).setValue(password);
         $x(LOGIN_SUBMIT_XPATH).shouldBe(visible).click();
     }
+
+    // ✅ Проверить, что товар не в корзине
+    public boolean isItemNotInCart(String itemName) {
+        return $$x("//div[@class='inventory_item_name']")
+                .stream()
+                .noneMatch(el -> el.getText().equals(itemName));
+    }
+
+    // ✅Проверить, что товар в корзине
+    public boolean isItemInCart(String itemName) {
+        return $$x("//div[@class='inventory_item_name']")
+                .stream()
+                .anyMatch(el -> el.getText().equals(itemName));
+    }
+
+    public String getAboutLinkHref() {
+        return $x(ABOUT_LINK_XPATH)
+                .shouldBe(visible)
+                .getAttribute("href");
+    }
+
+
 }
