@@ -1,10 +1,8 @@
 package com.ui.tests;
 
 import com.base.BaseTest;
-import com.ui.pages.CardPage;
-import com.ui.pages.CheckoutPage;
-import com.ui.pages.HomePage;
-import com.ui.pages.LoginPage;
+import com.ui.pages.*;
+import com.utils.TestConfig;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,20 +11,30 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.codeborne.selenide.Selenide.$x;
-import static com.codeborne.selenide.Condition.visible;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Epic("Страница корзины")
 @Feature("Работа с корзиной")
 public class CardPageTestBase extends BaseTest {
 
-    static final Logger logger = LoggerFactory.getLogger(CardPageTestBase.class);
+    private static final Logger logger = LoggerFactory.getLogger(CardPageTestBase.class);
 
     private final LoginPage loginPage = new LoginPage();
     private final HomePage homePage = new HomePage();
     private final CardPage cardPage = new CardPage();
     private final CheckoutPage checkoutPage = new CheckoutPage();
+
+    private static final String STANDARD_USER = "standard_user";
+
+    // Метод для авторизации стандартного пользователя
+    private void loginStandardUser() {
+        Allure.step("Авторизоваться стандартным пользователем", () -> {
+            loginPage.enterUsername(TestConfig.getLogin(STANDARD_USER));
+            loginPage.enterPassword(TestConfig.getPassword(STANDARD_USER));
+            loginPage.clickLogin();
+            logger.info("Пользователь '{}' успешно авторизован", STANDARD_USER);
+        });
+    }
 
     @Test
     @Severity(SeverityLevel.NORMAL)
@@ -34,18 +42,16 @@ public class CardPageTestBase extends BaseTest {
     @DisplayName("Проверка заголовка страницы корзины")
     public void shouldBeOnCartPage() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-        });
+        loginStandardUser();
 
         Allure.step("Перейти в корзину", () -> {
             homePage.clickCart();
+            logger.info("Открыта страница корзины");
         });
 
         Allure.step("Проверить, что отображается заголовок 'Your Cart'", () -> {
-            assertTrue(cardPage.isOnCartPage(), "Заголовок корзины не отображается");
+            assertTrue(cardPage.isOnCartPage(), "Заголовок корзины 'Your Cart' не отображается");
+            logger.info("Заголовок корзины отображается корректно");
         });
     }
 
@@ -57,30 +63,33 @@ public class CardPageTestBase extends BaseTest {
         String itemName = "Sauce Labs Backpack";
 
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-        });
+        loginStandardUser();
 
         Allure.step("Добавить товар в корзину: " + itemName, () -> {
             homePage.addItemToCart(itemName);
+            logger.info("Добавлен товар: {}", itemName);
         });
 
-        Allure.step("Перейти в корзину", homePage::clickCart);
+        Allure.step("Перейти в корзину", () -> {
+            homePage.clickCart();
+            logger.info("Открыта корзина");
+        });
 
         Allure.step("Проверить, что товар отображается в корзине", () -> {
             List<String> items = cardPage.getCartItemNames();
-            assertTrue(items.contains(itemName), "Товар не найден в корзине");
+            assertTrue(items.contains(itemName), "Товар '" + itemName + "' не найден в корзине");
+            logger.info("Товар '{}' присутствует в корзине", itemName);
         });
 
-        Allure.step("Удалить товар из корзины", () -> {
+        Allure.step("Удалить товар из корзины: " + itemName, () -> {
             cardPage.removeItemFromCart(itemName);
+            logger.info("Удалён товар: {}", itemName);
         });
 
         Allure.step("Проверить, что товар удалён из корзины", () -> {
             List<String> itemsAfter = cardPage.getCartItemNames();
-            assertFalse(itemsAfter.contains(itemName), "Товар остался в корзине после удаления");
+            assertFalse(itemsAfter.contains(itemName), "Товар '" + itemName + "' остался в корзине после удаления");
+            logger.info("Товар '{}' отсутствует в корзине после удаления", itemName);
         });
     }
 
@@ -90,13 +99,7 @@ public class CardPageTestBase extends BaseTest {
     @DisplayName("Проверка перехода к форме оформления заказа")
     public void shouldProceedToCheckout() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Пользователь авторизован");
-        });
+        loginStandardUser();
 
         Allure.step("Перейти в корзину", () -> {
             homePage.clickCart();
@@ -109,7 +112,7 @@ public class CardPageTestBase extends BaseTest {
         });
 
         Allure.step("Проверить, что отображается форма оформления заказа (Checkout: Your Information)", () -> {
-            assertTrue(checkoutPage.isOnCheckoutPage(), "Не отображается форма оформления заказа");
+            assertTrue(checkoutPage.isOnCheckoutPage(), "Форма оформления заказа не отображается");
             logger.info("Форма оформления заказа отображается корректно");
         });
     }
@@ -120,18 +123,20 @@ public class CardPageTestBase extends BaseTest {
     @DisplayName("Проверка отображения пунктов меню")
     public void shouldSeeMenuItemsOnCartPage() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-        });
+        loginStandardUser();
 
-        Allure.step("Перейти в корзину", homePage::clickCart);
+        Allure.step("Перейти в корзину", () -> {
+            homePage.clickCart();
+            logger.info("Открыта корзина");
+        });
 
         Allure.step("Открыть меню и проверить наличие всех пунктов", () -> {
             List<String> expectedItems = List.of("All Items", "About", "Logout", "Reset App State");
             cardPage.clickOpenMenu();
-            expectedItems.forEach(cardPage::shouldSeeMenuItem);
+            expectedItems.forEach(item -> {
+                cardPage.shouldSeeMenuItem(item);
+                logger.info("Пункт меню '{}' отображается", item);
+            });
         });
     }
 
@@ -141,21 +146,22 @@ public class CardPageTestBase extends BaseTest {
     @DisplayName("Переход из корзины в All Items через меню")
     public void shouldReturnToAllItemsFromCartMenu() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-        });
+        loginStandardUser();
 
-        Allure.step("Перейти в корзину", homePage::clickCart);
+        Allure.step("Перейти в корзину", () -> {
+            homePage.clickCart();
+            logger.info("Открыта корзина");
+        });
 
         Allure.step("Вернуться в каталог товаров через меню", () -> {
             cardPage.clickOpenMenu();
             cardPage.clickMenuItem("All Items");
+            logger.info("Через меню выполнен переход в 'All Items'");
         });
 
         Allure.step("Проверить, что отображается список товаров", () -> {
             assertTrue(homePage.isOnInventoryPage(), "Не произошёл возврат на страницу товаров");
+            logger.info("Возврат на страницу товаров выполнен успешно");
         });
     }
 }
