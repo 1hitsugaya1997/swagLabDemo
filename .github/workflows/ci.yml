@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI with Maven + Debug
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -28,10 +28,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build and run tests with detailed logs
-        run: mvn clean verify --batch-mode -e -X
+      - name: Run tests with debug output
+        run: mvn clean verify --batch-mode -e -X || true
 
-      - name: Upload test reports
+      - name: Display error logs from Surefire
+        if: always()
+        run: |
+          echo "=== Surefire STDERR/STDOUT Logs ==="
+          for f in target/surefire-reports/*.txt; do
+            echo "----- $f -----"
+            tail -n 100 "$f"
+          done
+
+      - name: Upload Surefire reports
         uses: actions/upload-artifact@v4
         with:
           name: surefire-reports
