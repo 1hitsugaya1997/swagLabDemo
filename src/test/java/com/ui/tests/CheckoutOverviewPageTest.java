@@ -1,24 +1,27 @@
 package com.ui.tests;
 
 import com.base.BaseTest;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.ui.pages.*;
+import com.utils.TestConfig;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.List;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$x;
-import static com.ui.tests.CardPageTestBase.logger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Epic("Оформление заказа")
 @Feature("Страница Overview")
 @DisplayName("CheckoutOverviewPage Tests")
 public class CheckoutOverviewPageTest extends BaseTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(CheckoutOverviewPageTest.class);
 
     private final LoginPage loginPage = new LoginPage();
     private final HomePage homePage = new HomePage();
@@ -27,25 +30,21 @@ public class CheckoutOverviewPageTest extends BaseTest {
     private final CheckoutOverviewPage overviewPage = new CheckoutOverviewPage();
     private final CheckoutCompletePage completePage = new CheckoutCompletePage();
 
-    @Test
-    @Story("Проверка перехода на страницу обзора заказа")
-    @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("Должны попасть на страницу 'Checkout: Overview'")
-    public void shouldOpenCheckoutOverviewPage() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
+    private static final String STANDARD_USER = "standard_user";
+
+    private void loginStandardUser() {
         Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
+            loginPage.enterUsername(TestConfig.getLogin(STANDARD_USER));
+            loginPage.enterPassword(TestConfig.getPassword(STANDARD_USER));
+            loginPage.clickLogin();
+            logger.info("Пользователь '{}' успешно авторизован", STANDARD_USER);
         });
+    }
 
-        String itemName = "Sauce Labs Backpack";
-
+    private void prepareOrderWithItem(String itemName) {
         Allure.step("Добавить товар в корзину: " + itemName, () -> {
             homePage.addItemToCart(itemName);
-            logger.info("Добавлен товар: {}", itemName);
+            logger.info("Товар '{}' добавлен в корзину", itemName);
         });
 
         Allure.step("Перейти в корзину и к оформлению", () -> {
@@ -55,10 +54,26 @@ public class CheckoutOverviewPageTest extends BaseTest {
                     .enterLastName("Иванов")
                     .enterCode("123456")
                     .clickContinue();
+            logger.info("Данные для оформления заказа введены");
         });
-        Selenide.sleep(2000); // пауза 2 секунды
+    }
+
+    @Test
+    @Story("Проверка перехода на страницу обзора заказа")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("Должны попасть на страницу 'Checkout: Overview'")
+    public void shouldOpenCheckoutOverviewPage() {
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
+        logger.info("Страница логина открыта");
+
+        loginStandardUser();
+
+        String itemName = "Sauce Labs Backpack";
+        prepareOrderWithItem(itemName);
+
         Allure.step("Проверить, что находимся на странице Overview", () -> {
-            assertTrue(overviewPage.isOnOverviewPage(), "Не на странице обзора заказа");
+            assertTrue(overviewPage.isOnOverviewPage(), "Ожидалась страница обзора заказа, но она не отображается");
+            logger.info("Находимся на странице обзора заказа");
         });
     }
 
@@ -67,35 +82,22 @@ public class CheckoutOverviewPageTest extends BaseTest {
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("Завершение заказа кнопкой Finish")
     public void shouldFinishOrderSuccessfully() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
+        logger.info("Страница логина открыта");
+
+        loginStandardUser();
 
         String itemName = "Sauce Labs Backpack";
+        prepareOrderWithItem(itemName);
 
-        Allure.step("Добавить товар в корзину: " + itemName, () -> {
-            homePage.addItemToCart(itemName);
-            logger.info("Добавлен товар: {}", itemName);
+        Allure.step("Нажать кнопку Finish", () -> {
+            overviewPage.clickFinish();
+            logger.info("Нажата кнопка Finish");
         });
 
-        Allure.step("Перейти в корзину и к оформлению", () -> {
-            homePage.clickCart();
-            cardPage.clickCheckout();
-            checkoutPage.enterFirstName("Иван")
-                    .enterLastName("Иванов")
-                    .enterCode("123456")
-                    .clickContinue();
-        });
-        Selenide.sleep(2000); // пауза 2 секунды
-        Allure.step("Нажать кнопку Finish", overviewPage::clickFinish);
-        Selenide.sleep(2000); // пауза 2 секунды
-        Allure.step("Проверить, что заказ завершён", () -> {
-            assertTrue(completePage.isOnCompletePage(), "Заказ не завершён успешно");
+        Allure.step("Проверить, что заказ завершён успешно", () -> {
+            assertTrue(completePage.isOnCompletePage(), "Заказ не завершён успешно, страница завершения не отображается");
+            logger.info("Заказ успешно завершён");
         });
     }
 
@@ -104,35 +106,22 @@ public class CheckoutOverviewPageTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Нажать Cancel и вернуться к продуктам")
     public void shouldCancelAndReturnToCart() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
+        logger.info("Страница логина открыта");
+
+        loginStandardUser();
 
         String itemName = "Sauce Labs Backpack";
+        prepareOrderWithItem(itemName);
 
-        Allure.step("Добавить товар в корзину: " + itemName, () -> {
-            homePage.addItemToCart(itemName);
-            logger.info("Добавлен товар: {}", itemName);
+        Allure.step("Нажать кнопку Cancel", () -> {
+            overviewPage.clickCancel();
+            logger.info("Нажата кнопка Cancel");
         });
 
-        Allure.step("Перейти в корзину и к оформлению", () -> {
-            homePage.clickCart();
-            cardPage.clickCheckout();
-            checkoutPage.enterFirstName("Иван")
-                    .enterLastName("Иванов")
-                    .enterCode("123456")
-                    .clickContinue();
-        });
-
-        Allure.step("Нажать Cancel", overviewPage::clickCancel);
-
-        Allure.step("Проверить, что вернулись в корзину", () -> {
-            assertTrue(homePage.isOnInventoryPage(), "Не вернулись на страницу корзины");
+        Allure.step("Проверить, что вернулись на страницу продуктов", () -> {
+            assertTrue(homePage.isOnInventoryPage(), "Ожидалось возвращение на страницу продуктов, но этого не произошло");
+            logger.info("Успешный возврат на страницу продуктов");
         });
     }
 
@@ -141,40 +130,20 @@ public class CheckoutOverviewPageTest extends BaseTest {
     @Story("Проверка отображения элементов в меню")
     @DisplayName("Проверка отображения элементов в меню")
     public void checkMenuItemsVisibility() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
+        logger.info("Страница логина открыта");
+
+        loginStandardUser();
 
         String itemName = "Sauce Labs Backpack";
+        prepareOrderWithItem(itemName);
 
-        Allure.step("Добавить товар в корзину: " + itemName, () -> {
-            homePage.addItemToCart(itemName);
-            logger.info("Добавлен товар: {}", itemName);
-        });
-
-        Allure.step("Перейти в корзину и к оформлению", () -> {
-            homePage.clickCart();
-            cardPage.clickCheckout();
-            checkoutPage.enterFirstName("Иван")
-                    .enterLastName("Иванов")
-                    .enterCode("123456")
-                    .clickContinue();
-        });
-
-        Allure.step("Проверка отображения элементов в OpenMenu", () -> {
-            List<String> menuItems = List.of("All Items", "About", "Logout", "Reset App State");
-
+        Allure.step("Проверить отображение элементов в меню", () -> {
+            List<String> expectedMenuItems = List.of("All Items", "About", "Logout", "Reset App State");
             homePage.clickOpenMenu();
-            menuItems.forEach(homePage::shouldSeeMenuItem);
-
-            logger.info("Элементы отображаются: {}", menuItems);
+            expectedMenuItems.forEach(homePage::shouldSeeMenuItem);
+            logger.info("Отображаются все ожидаемые элементы меню: {}", expectedMenuItems);
         });
-
     }
 
     @Test
@@ -182,30 +151,13 @@ public class CheckoutOverviewPageTest extends BaseTest {
     @Story("Проверка работы кнопки About")
     @DisplayName("Переход по кнопке About")
     public void shouldRedirectToSauceLabsPageViaAboutMenu() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
+        logger.info("Страница логина открыта");
+
+        loginStandardUser();
 
         String itemName = "Sauce Labs Backpack";
-
-        Allure.step("Добавить товар в корзину: " + itemName, () -> {
-            homePage.addItemToCart(itemName);
-            logger.info("Добавлен товар: {}", itemName);
-        });
-
-        Allure.step("Перейти в корзину и к оформлению", () -> {
-            homePage.clickCart();
-            cardPage.clickCheckout();
-            checkoutPage.enterFirstName("Иван")
-                    .enterLastName("Иванов")
-                    .enterCode("123456")
-                    .clickContinue();
-        });
+        prepareOrderWithItem(itemName);
 
         Allure.step("Проверить, что кнопка About ведёт на saucelabs.com", () -> {
             homePage.clickOpenMenu();
@@ -214,44 +166,28 @@ public class CheckoutOverviewPageTest extends BaseTest {
             aboutLink.shouldBe(visible, Duration.ofSeconds(5));
 
             String href = aboutLink.getAttribute("href");
-            logger.info("Ссылка About ведет на: {}", href);
+            logger.info("Ссылка About ведёт на: {}", href);
             assertTrue(href.contains("saucelabs.com"), "Ссылка About не ведет на saucelabs.com");
         });
     }
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @Story("Проверка работы кнопки Logout")
+    @Story("Проверка выхода из системы через меню Logout")
     @DisplayName("Проверка выхода из системы через меню Logout")
     public void shouldLogoutSuccessfully() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
+        logger.info("Страница логина открыта");
+
+        loginStandardUser();
 
         String itemName = "Sauce Labs Backpack";
-
-        Allure.step("Добавить товар в корзину: " + itemName, () -> {
-            homePage.addItemToCart(itemName);
-            logger.info("Добавлен товар: {}", itemName);
-        });
-
-        Allure.step("Перейти в корзину и к оформлению", () -> {
-            homePage.clickCart();
-            cardPage.clickCheckout();
-            checkoutPage.enterFirstName("Иван")
-                    .enterLastName("Иванов")
-                    .enterCode("123456")
-                    .clickContinue();
-        });
+        prepareOrderWithItem(itemName);
 
         Allure.step("Выйти из системы через меню Logout", () -> {
             homePage.clickOpenMenu();
             homePage.clickMenuItem("Logout");
+            logger.info("Выполнен выход из системы через меню Logout");
         });
 
         Allure.step("Проверить, что пользователь на странице логина", () -> {
@@ -259,6 +195,4 @@ public class CheckoutOverviewPageTest extends BaseTest {
             logger.info("Пользователь успешно вышел и увидел страницу логина");
         });
     }
-
-
 }
