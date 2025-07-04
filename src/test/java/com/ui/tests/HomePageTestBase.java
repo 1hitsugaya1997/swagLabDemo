@@ -1,11 +1,9 @@
 package com.ui.tests;
 
 import com.base.BaseTest;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverRunner;
 import com.ui.pages.HomePage;
 import com.ui.pages.LoginPage;
+import com.utils.TestConfig;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$$x;
-import static com.codeborne.selenide.Selenide.$x;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,38 +27,16 @@ public class HomePageTestBase extends BaseTest {
     private final HomePage homePage = new HomePage();
     private final LoginPage loginPage = new LoginPage();
 
+    private static final String STANDARD_USER = "standard_user";
+    private static final String STANDARD_PASSWORD = "secret_sauce";
 
-    @Test
-    @Severity(SeverityLevel.NORMAL)
-    @Story("Корзина и добавление товара")
-    @DisplayName("Добавление товара в корзину и переход к корзине")
-    public void addItemToCartTest() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
-
+    // Метод для авторизации стандартного пользователя
+    private void loginStandardUser() {
         Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                     .enterPassword("secret_sauce")
-                     .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
-
-        String itemName = "Sauce Labs Backpack";
-
-        Allure.step("Добавить товар в корзину: " + itemName, () -> {
-            homePage.addItemToCart(itemName);
-            logger.info("Добавлен товар: {}", itemName);
-        });
-
-        Allure.step("Открыть корзину", () -> {
-            homePage.clickCart();
-            logger.info("Переход в корзину выполнен");
-        });
-
-        Allure.step("Проверить, что товар отображается в корзине", () -> {
-            boolean itemInCart = $x("//div[@class='inventory_item_name' and text()='" + itemName + "']").isDisplayed();
-            assertTrue(itemInCart, "Товар не найден в корзине");
-            logger.info("Товар '{}' отображается в корзине", itemName);
+            loginPage.enterUsername(TestConfig.getLogin(STANDARD_USER));
+            loginPage.enterPassword(TestConfig.getPassword(STANDARD_USER));
+            loginPage.clickLogin();
+            logger.info("Авторизация стандартного пользователя прошла успешно");
         });
     }
 
@@ -71,16 +44,10 @@ public class HomePageTestBase extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Story("Корзина и добавление товара")
     @DisplayName("Добавление товара в корзину и переход к корзине")
-    public void removeItemToCartTest() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
+    public void addItemToCartTest() {
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
 
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
+        loginStandardUser();
 
         String itemName = "Sauce Labs Backpack";
 
@@ -95,21 +62,46 @@ public class HomePageTestBase extends BaseTest {
         });
 
         Allure.step("Проверить, что товар отображается в корзине", () -> {
-            boolean itemInCart = $x("//div[@class='inventory_item_name' and text()='" + itemName + "']").isDisplayed();
-            assertTrue(itemInCart, "Товар не найден в корзине");
+            assertTrue(homePage.isItemInCart(itemName), "Товар не найден в корзине");
+            logger.info("Товар '{}' отображается в корзине", itemName);
+        });
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Корзина и удаление товара")
+    @DisplayName("Удаление товара из корзины")
+    public void removeItemFromCartTest() {
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
+
+        loginStandardUser();
+
+        String itemName = "Sauce Labs Backpack";
+
+        Allure.step("Добавить товар в корзину: " + itemName, () -> {
+            homePage.addItemToCart(itemName);
+            logger.info("Добавлен товар: {}", itemName);
+        });
+
+        Allure.step("Открыть корзину", () -> {
+            homePage.clickCart();
+            logger.info("Переход в корзину выполнен");
+        });
+
+        Allure.step("Проверить, что товар отображается в корзине", () -> {
+            assertTrue(homePage.isItemInCart(itemName), "Товар не найден в корзине");
             logger.info("Товар '{}' отображается в корзине", itemName);
         });
 
         Allure.step("Перейти на вкладку All Items через меню", () -> {
-            String menu_item = "All Items";
             homePage.clickOpenMenu();
-            homePage.clickMenuItem(menu_item);
+            homePage.clickMenuItem("All Items");
             logger.info("Переход на вкладку All Items выполнен успешно");
         });
 
-        Allure.step("Убрать товар из корзины: " + itemName, () -> {
-            homePage.addItemToCart(itemName);
-            logger.info("Убран товар: {}", itemName);
+        Allure.step("Удалить товар из корзины: " + itemName, () -> {
+            homePage.removeItemFromCart(itemName);
+            logger.info("Удалён товар: {}", itemName);
         });
 
         Allure.step("Открыть корзину", () -> {
@@ -118,10 +110,9 @@ public class HomePageTestBase extends BaseTest {
         });
 
         Allure.step("Проверить, что товар не отображается в корзине", () -> {
-            $x("//div[@class='inventory_item_name' and text()='" + itemName + "']").shouldNotBe(visible);
+            assertTrue(homePage.isItemNotInCart(itemName), "Товар всё ещё отображается в корзине");
             logger.info("Товар '{}' не отображается в корзине, как и ожидалось", itemName);
         });
-
     }
 
     @Test
@@ -129,26 +120,17 @@ public class HomePageTestBase extends BaseTest {
     @Story("Проверка отображения элементов в меню")
     @DisplayName("Проверка отображения элементов в меню")
     public void checkMenuItemsVisibility() {
-        Allure.step("Открыть главную страницу", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
+        Allure.step("Открыть страницу логина", loginPage::openLoginPage);
 
-        Allure.step("Авторизоваться стандартным пользователем", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Авторизация прошла успешно");
-        });
+        loginStandardUser();
 
+        List<String> expectedMenuItems = List.of("All Items", "About", "Logout", "Reset App State");
 
-        Allure.step("Проверка отображения элементов в OpenMenu", () -> {
-            List<String> menuItems = List.of("All Items", "About", "Logout", "Reset App State");
-
+        Allure.step("Проверка отображения элементов в меню", () -> {
             homePage.clickOpenMenu();
-            menuItems.forEach(homePage::shouldSeeMenuItem);
-
-            logger.info("Элементы отображаются: {}", menuItems);
+            expectedMenuItems.forEach(homePage::shouldSeeMenuItem);
+            logger.info("Отображаются все ожидаемые элементы меню: {}", expectedMenuItems);
         });
-
     }
 
     @Test
@@ -156,25 +138,15 @@ public class HomePageTestBase extends BaseTest {
     @Story("Проверка работы кнопки About")
     @DisplayName("Переход по кнопке About")
     public void shouldRedirectToSauceLabsPageViaAboutMenu() {
-
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
 
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Вход выполнен");
-        });
+        loginStandardUser();
 
         Allure.step("Проверить, что кнопка About ведёт на saucelabs.com", () -> {
             homePage.clickOpenMenu();
 
-            SelenideElement aboutLink = $x("//a[text()='About']");
-            aboutLink.shouldBe(visible, Duration.ofSeconds(5));
-
-            String href = aboutLink.getAttribute("href");
-            logger.info("Ссылка About ведет на: {}", href);
+            String href = homePage.getAboutLinkHref();
+            logger.info("Ссылка About ведёт на: {}", href);
             assertTrue(href.contains("saucelabs.com"), "Ссылка About не ведет на saucelabs.com");
         });
     }
@@ -184,20 +156,14 @@ public class HomePageTestBase extends BaseTest {
     @Story("Проверка работы кнопки Logout")
     @DisplayName("Проверка выхода из системы через меню Logout")
     public void shouldLogoutSuccessfully() {
-
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
 
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Вход выполнен");
-        });
+        loginStandardUser();
 
         Allure.step("Выйти из системы через меню Logout", () -> {
             homePage.clickOpenMenu();
             homePage.clickMenuItem("Logout");
+            logger.info("Выполнен выход из системы через меню Logout");
         });
 
         Allure.step("Проверить, что пользователь на странице логина", () -> {
@@ -206,45 +172,33 @@ public class HomePageTestBase extends BaseTest {
         });
     }
 
-
+    // --- Сортировки ---
 
     @Test
     @Severity(SeverityLevel.TRIVIAL)
     @Story("Сортировка товаров")
     @DisplayName("Проверка сортировки по названию (A to Z)")
-    public void sortItemsByNameTest() {
+    public void sortItemsByNameAscTest() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
 
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                     .enterPassword("secret_sauce")
-                     .clickLogin();
-            logger.info("Вход выполнен");
-        });
+        loginStandardUser();
 
-        Allure.step("Выбрать сортировку A to Z", () -> {
+        Allure.step("Выбрать сортировку Name (A to Z)", () -> {
             homePage.selectSortOption("Name (A to Z)");
             logger.info("Выбрана сортировка по имени (A to Z)");
         });
 
-        Allure.step("Проверить, что товары отсортированы по алфавиту и первый товар — Sauce Labs Backpack", () -> {
-            // Получаем список названий товаров
-            List<String> productNames = Collections.singletonList(homePage.getFirstProductName());
+        Allure.step("Проверить, что товары отсортированы по алфавиту", () -> {
+            List<String> productNames = homePage.getAllProductNames();
 
-            // Проверяем первый товар
-            String actualFirstProduct = productNames.get(0);
-            logger.info("Первый товар: {}", actualFirstProduct);
-            assertEquals("Sauce Labs Backpack", actualFirstProduct, "Первый товар отображается неверно");
+            List<String> sortedNames = productNames.stream()
+                    .sorted(String::compareToIgnoreCase)
+                    .collect(Collectors.toList());
 
-            // Сравниваем отсортированный список
-            List<String> sortedNames = new ArrayList<>(productNames);
-            sortedNames.sort(String::compareToIgnoreCase);
-
-            logger.info("Названия товаров на странице: {}", productNames);
+            logger.info("Текущий порядок: {}", productNames);
             logger.info("Ожидаемый порядок: {}", sortedNames);
 
-            assertEquals(sortedNames, productNames, "Товары не отсортированы по алфавиту (A–Z)");
+            assertEquals(sortedNames, productNames, "Товары не отсортированы по имени (A to Z)");
         });
     }
 
@@ -252,125 +206,83 @@ public class HomePageTestBase extends BaseTest {
     @Severity(SeverityLevel.TRIVIAL)
     @Story("Сортировка товаров")
     @DisplayName("Проверка сортировки по названию (Z to A)")
-    public void sortItemsByNameTest2() {
+    public void sortItemsByNameDescTest() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
 
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Вход выполнен");
-        });
+        loginStandardUser();
 
-        Allure.step("Выбрать сортировку Z to A", () -> {
+        Allure.step("Выбрать сортировку Name (Z to A)", () -> {
             homePage.selectSortOption("Name (Z to A)");
             logger.info("Выбрана сортировка по имени (Z to A)");
         });
 
-        Allure.step("Проверить, что товары отсортированы по алфавиту и первый товар — Test.allTheThings() T-Shirt (Red)", () -> {
-            // Получаем список названий товаров
-            List<String> productNames = Collections.singletonList(homePage.getFirstProductName());
+        Allure.step("Проверить, что товары отсортированы по алфавиту в обратном порядке", () -> {
+            List<String> productNames = homePage.getAllProductNames();
 
-            // Проверяем первый товар
-            String actualFirstProduct = productNames.get(0);
-            logger.info("Первый товар: {}", actualFirstProduct);
-            assertEquals("Test.allTheThings() T-Shirt (Red)", actualFirstProduct, "Первый товар отображается неверно");
+            List<String> sortedNames = productNames.stream()
+                    .sorted((a, b) -> b.compareToIgnoreCase(a))
+                    .collect(Collectors.toList());
 
-            // Сравниваем отсортированный список
-            List<String> sortedNames = new ArrayList<>(productNames);
-            sortedNames.sort(String::compareToIgnoreCase);
-
-            logger.info("Названия товаров на странице: {}", productNames);
+            logger.info("Текущий порядок: {}", productNames);
             logger.info("Ожидаемый порядок: {}", sortedNames);
 
-            assertEquals(sortedNames, productNames, "Товары не отсортированы по алфавиту (Z–A)");
+            assertEquals(sortedNames, productNames, "Товары не отсортированы по имени (Z to A)");
         });
-
-
     }
 
     @Test
     @Severity(SeverityLevel.TRIVIAL)
     @Story("Сортировка товаров")
-    @DisplayName("Проверка сортировки по (Price (low to high))")
-    public void shouldSortItemsByPriceLowToHigh() {
+    @DisplayName("Проверка сортировки по цене (low to high)")
+    public void sortItemsByPriceLowToHighTest() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
 
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Вход выполнен");
-        });
+        loginStandardUser();
 
         Allure.step("Выбрать сортировку Price (low to high)", () -> {
             homePage.selectSortOption("Price (low to high)");
-            logger.info("Выбрана сортировка Price (low to high)");
+            logger.info("Выбрана сортировка по цене (low to high)");
         });
 
-        Allure.step("Проверить, что товары отсортированы по алфавиту и первый товар — Sauce Labs Onesie", () -> {
-            // Получаем список названий товаров
-            List<String> productNames = Collections.singletonList(homePage.getFirstProductName());
+        Allure.step("Проверить, что товары отсортированы по возрастанию цены", () -> {
+            List<Double> prices = homePage.getAllProductPrices();
 
-            // Проверяем первый товар
-            String actualFirstProduct = productNames.get(0);
-            logger.info("Первый товар: {}", actualFirstProduct);
-            assertEquals("Sauce Labs Onesie", actualFirstProduct, "Первый товар отображается неверно");
+            List<Double> sortedPrices = prices.stream()
+                    .sorted()
+                    .collect(Collectors.toList());
 
-            // Сравниваем отсортированный список
-            List<String> sortedNames = new ArrayList<>(productNames);
-            sortedNames.sort(String::compareToIgnoreCase);
+            logger.info("Текущий порядок цен: {}", prices);
+            logger.info("Ожидаемый порядок цен: {}", sortedPrices);
 
-            logger.info("Названия товаров на странице: {}", productNames);
-            logger.info("Ожидаемый порядок: {}", sortedNames);
-
-            assertEquals(sortedNames, productNames, "Товары не отсортированы по Price (low to high)");
+            assertEquals(sortedPrices, prices, "Товары не отсортированы по цене (low to high)");
         });
-
     }
 
     @Test
     @Severity(SeverityLevel.TRIVIAL)
     @Story("Сортировка товаров")
-    @DisplayName("Проверка сортировки по Price (high to low)")
-    public void shouldSortItemsByPriceHighToLow() {
+    @DisplayName("Проверка сортировки по цене (high to low)")
+    public void sortItemsByPriceHighToLowTest() {
         Allure.step("Открыть страницу логина", loginPage::openLoginPage);
-        logger.info("Открыта страница логина");
 
-        Allure.step("Авторизоваться", () -> {
-            loginPage.enterUsername("standard_user")
-                    .enterPassword("secret_sauce")
-                    .clickLogin();
-            logger.info("Вход выполнен");
-        });
+        loginStandardUser();
 
         Allure.step("Выбрать сортировку Price (high to low)", () -> {
             homePage.selectSortOption("Price (high to low)");
-            logger.info("Выбрана сортировка Price (high to low)");
+            logger.info("Выбрана сортировка по цене (high to low)");
         });
 
-        Allure.step("Проверить, что товары отсортированы по алфавиту и первый товар — Sauce Labs Fleece Jacket", () -> {
-            // Получаем список названий товаров
-            List<String> productNames = Collections.singletonList(homePage.getFirstProductName());
+        Allure.step("Проверить, что товары отсортированы по убыванию цены", () -> {
+            List<Double> prices = homePage.getAllProductPrices();
 
-            // Проверяем первый товар
-            String actualFirstProduct = productNames.get(0);
-            logger.info("Первый товар: {}", actualFirstProduct);
-            assertEquals("Sauce Labs Fleece Jacket", actualFirstProduct, "Первый товар отображается неверно");
+            List<Double> sortedPrices = prices.stream()
+                    .sorted((a, b) -> b.compareTo(a))
+                    .collect(Collectors.toList());
 
-            // Сравниваем отсортированный список
-            List<String> sortedNames = new ArrayList<>(productNames);
-            sortedNames.sort(String::compareToIgnoreCase);
+            logger.info("Текущий порядок цен: {}", prices);
+            logger.info("Ожидаемый порядок цен: {}", sortedPrices);
 
-            logger.info("Названия товаров на странице: {}", productNames);
-            logger.info("Ожидаемый порядок: {}", sortedNames);
-
-            assertEquals(sortedNames, productNames, "Товары не отсортированы по Price (high to low)");
+            assertEquals(sortedPrices, prices, "Товары не отсортированы по цене (high to low)");
         });
-
     }
-
-
 }
