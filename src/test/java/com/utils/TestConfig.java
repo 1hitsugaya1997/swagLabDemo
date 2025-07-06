@@ -34,4 +34,8 @@ public class TestConfig {
     public static String getBaseUrl() {
         return props.getProperty("url.base");
     }
+
+    public static String getReqresBaseUrl() {
+        return props.getProperty("reqres.url.base");
+    }
 }
