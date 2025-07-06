@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:        # 🔧 ручной запуск из интерфейса
+  schedule:                 # ⏰ запуск по расписанию
+    - cron: '0 6 * * 1'     # каждый понедельник в 06:00 UTC
 
 jobs:
   build:
