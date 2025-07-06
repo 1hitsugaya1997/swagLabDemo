@@ -10,19 +10,17 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.codeborne.selenide.Condition.visible;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("Главная страница")
 @Feature("Отображение и взаимодействие с элементами")
-public class HomePageTestBase extends BaseTest {
+public class HomePageTest extends BaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(HomePageTestBase.class);
+    private static final Logger logger = LoggerFactory.getLogger(HomePageTest.class);
 
     private final HomePage homePage = new HomePage();
     private final LoginPage loginPage = new LoginPage();

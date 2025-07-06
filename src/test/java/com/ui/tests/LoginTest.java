@@ -23,9 +23,9 @@ import org.junit.jupiter.params.provider.Arguments;
 
 @Epic("Авторизация")
 @Feature("Форма логина")
-public class LoginTestBase extends BaseTest {
+public class LoginTest extends BaseTest {
 
-    public static final Logger logger = LoggerFactory.getLogger(LoginTestBase.class);
+    public static final Logger logger = LoggerFactory.getLogger(LoginTest.class);
 
     private final LoginPage loginPage = new LoginPage();
 

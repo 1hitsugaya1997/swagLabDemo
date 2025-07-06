@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Epic("Страница корзины")
 @Feature("Работа с корзиной")
-public class CardPageTestBase extends BaseTest {
+public class CardPageTest extends BaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(CardPageTestBase.class);
+    private static final Logger logger = LoggerFactory.getLogger(CardPageTest.class);
 
     private final LoginPage loginPage = new LoginPage();
     private final HomePage homePage = new HomePage();

@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("Оформление заказа")
 @Feature("Страница Checkout: Your Information")
-public class CheckoutPageTestBase extends BaseTest {
+public class CheckoutPageTest extends BaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(CheckoutPageTestBase.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckoutPageTest.class);
 
     private static final String STANDARD_USER = "standard_user";
     private static final String STANDARD_PASSWORD = "secret_sauce";
