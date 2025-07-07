@@ -1,13 +1,14 @@
 package com.api.reqres.tests.GET;
 
 import com.api.reqres.clients.UserClient;
+import com.api.reqres.dto.UnknownListResponse;
+import com.api.reqres.dto.UnknownResource;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,28 +30,30 @@ public class UnknownApiTest {
         Response response = step("Выполнить GET-запрос /unknown",
                 () -> userClient.getUnknown());
 
-        // ✅ Проверяем статус
+        // ✅ Проверка статус-кода
         step("Проверить статус ответа", () ->
                 assertEquals(200, response.statusCode(), "Ожидается статус 200"));
 
-        // 📦 Получаем список ресурсов
-        List<Map<String, Object>> dataList = step("Извлечь список объектов 'data' из тела ответа",
-                () -> response.jsonPath().getList("data"));
+        // 📦 Десериализация в DTO
+        UnknownListResponse listResponse = step("Десериализовать ответ в DTO UnknownListResponse",
+                () -> response.as(UnknownListResponse.class));
+
+        List<UnknownResource> resources = listResponse.getData();
 
         step("Проверить, что список ресурсов не пустой", () ->
-                assertFalse(dataList.isEmpty(), "Список ресурсов не должен быть пустым"));
+                assertFalse(resources.isEmpty(), "Список ресурсов не должен быть пустым"));
 
         // 🔍 Проверка первого ресурса
-        Map<String, Object> resource = dataList.get(0);
+        UnknownResource resource = resources.get(0);
 
         step("Проверить поля первого ресурса", () -> {
-            assertNotNull(resource.get("id"), "ID ресурса не должен быть null");
-            assertTrue((Integer) resource.get("id") > 0, "ID ресурса должен быть положительным");
+            assertNotNull(resource.getId(), "ID ресурса не должен быть null");
+            assertTrue(resource.getId() > 0, "ID ресурса должен быть положительным");
 
-            assertNotNull(resource.get("name"), "Имя ресурса не должно быть null");
-            assertNotNull(resource.get("year"), "Год ресурса не должен быть null");
-            assertNotNull(resource.get("color"), "Цвет ресурса не должен быть null");
-            assertNotNull(resource.get("pantone_value"), "Pantone значение ресурса не должно быть null");
+            assertNotNull(resource.getName(), "Имя ресурса не должно быть null");
+            assertNotNull(resource.getYear(), "Год ресурса не должен быть null");
+            assertNotNull(resource.getColor(), "Цвет ресурса не должен быть null");
+            assertNotNull(resource.getPantoneValue(), "Pantone значение ресурса не должно быть null");
         });
     }
 }

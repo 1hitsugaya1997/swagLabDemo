@@ -1,13 +1,14 @@
 package com.api.reqres.tests.GET;
 
 import com.api.reqres.clients.UserClient;
+import com.api.reqres.dto.ListUsersResponse;
+import com.api.reqres.dto.User;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,41 +27,39 @@ public class ListUserApiTest {
     void shouldGetListUsersByPage() {
         final int page = 2;
 
-        // 🔍 Выполняем запрос
+        // 🔍 Выполняем GET-запрос
         Response response = step("Выполнить GET-запрос списка пользователей на странице " + page,
                 () -> userClient.getListUsers(page));
 
-        // ✅ Проверяем базовые поля
+        // ✅ Десериализация в DTO
+        ListUsersResponse listUsers = step("Десериализовать ответ в DTO ListUsersResponse",
+                () -> response.as(ListUsersResponse.class));
+
+        // ✅ Проверка статус-кода
         step("Проверить статус код и номер страницы", () -> {
             assertEquals(200, response.statusCode(), "Ожидается статус 200");
-            assertEquals(page, response.jsonPath().getInt("page"), "Номер страницы должен совпадать");
+            assertEquals(page, listUsers.getPage(), "Номер страницы должен совпадать");
         });
 
-        // 🧾 Получаем список пользователей
-        List<Map<String, Object>> users = step("Получить список пользователей из тела ответа",
-                () -> response.jsonPath().getList("data"));
+        // 📦 Работаем с DTO: список пользователей
+        List<User> users = listUsers.getData();
 
         step("Проверить, что список пользователей не пустой", () ->
                 assertFalse(users.isEmpty(), "Список пользователей не должен быть пустым"));
 
-        // 🔍 Проверяем первого пользователя
-        Map<String, Object> firstUser = users.get(0);
-        Integer id = (Integer) firstUser.get("id");
-        String email = (String) firstUser.get("email");
-        String firstName = (String) firstUser.get("first_name");
-        String lastName = (String) firstUser.get("last_name");
+        // 🔍 Проверка первого пользователя
+        User firstUser = users.get(0);
 
         step("Проверить поля первого пользователя", () -> {
-            assertNotNull(id, "ID пользователя не должен быть null");
-            assertTrue(id > 0, "ID пользователя должен быть положительным");
+            assertNotNull(firstUser.getId(), "ID пользователя не должен быть null");
+            assertTrue(firstUser.getId() > 0, "ID пользователя должен быть положительным");
 
-            assertNotNull(email, "Email пользователя не должен быть null");
-            assertTrue(email.matches("^[\\w.-]+@[\\w.-]+\\.\\w+$"), "Email должен быть валидным");
+            assertNotNull(firstUser.getEmail(), "Email не должен быть null");
+            assertTrue(firstUser.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.\\w+$"),
+                    "Email должен быть валидным");
 
-            assertNotNull(firstName, "Имя пользователя не должно быть null");
-            assertNotNull(lastName, "Фамилия пользователя не должна быть null");
+            assertNotNull(firstUser.getFirstName(), "Имя не должно быть null");
+            assertNotNull(firstUser.getLastName(), "Фамилия не должна быть null");
         });
     }
-
-
 }

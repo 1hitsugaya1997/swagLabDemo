@@ -57,7 +57,7 @@ public class UserClient {
 
         Response response = given()
                 .baseUri(BASE_URL)
-                .header("x-api-ключ", "reqres-free-v1")
+                .header("x-api-key", "reqres-free-v1")
                 .log().all()  // Лог запроса RestAssured
                 .when()
                 .get("unknown" )
