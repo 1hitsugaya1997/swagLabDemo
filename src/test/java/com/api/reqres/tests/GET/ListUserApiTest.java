@@ -1,7 +1,7 @@
 package com.api.reqres.tests.GET;
 
 import com.api.reqres.clients.UserClient;
-import com.api.reqres.dto.ListUsersResponse;
+import com.api.reqres.dto.ListUsers.ListUsersResponse;
 import com.api.reqres.dto.User;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Epic("Reqres API")
 @Feature("GET /users")
 @Story("Получение списка пользователей")
-@Severity(SeverityLevel.CRITICAL)
+@Severity(SeverityLevel.CRITICAL) //Важность
 public class ListUserApiTest {
 
     private final UserClient userClient = new UserClient();

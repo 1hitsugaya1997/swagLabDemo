@@ -1,5 +1,7 @@
-package com.api.reqres.dto;
+package com.api.reqres.dto.UnknownList;
 
+import com.api.reqres.dto.Support.Support;
+import com.api.reqres.dto.Unknown.UnknownResource;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 

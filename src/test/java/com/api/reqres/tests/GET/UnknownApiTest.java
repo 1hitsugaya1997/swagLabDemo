@@ -1,8 +1,8 @@
 package com.api.reqres.tests.GET;
 
 import com.api.reqres.clients.UserClient;
-import com.api.reqres.dto.UnknownListResponse;
-import com.api.reqres.dto.UnknownResource;
+import com.api.reqres.dto.UnknownList.UnknownListResponse;
+import com.api.reqres.dto.Unknown.UnknownResource;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;

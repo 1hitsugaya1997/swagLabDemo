@@ -1,4 +1,4 @@
-package com.api.reqres.dto;
+package com.api.reqres.dto.Unknown;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

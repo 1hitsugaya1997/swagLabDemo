@@ -1,4 +1,4 @@
-package com.api.reqres.dto;
+package com.api.reqres.dto.Support;
 
 import lombok.*;
 

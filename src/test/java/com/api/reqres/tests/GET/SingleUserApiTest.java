@@ -1,7 +1,7 @@
 package com.api.reqres.tests.GET;
 
 import com.api.reqres.clients.UserClient;
-import com.api.reqres.dto.SingleUserResponse;
+import com.api.reqres.dto.SingleUser.SingleUserResponse;
 import com.api.reqres.dto.User;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
