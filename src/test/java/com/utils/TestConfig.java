@@ -38,4 +38,16 @@ public class TestConfig {
     public static String getReqresBaseUrl() {
         return props.getProperty("reqres.url.base");
     }
+
+    public static String getDbUrl() {
+        return props.getProperty("db.url");
+    }
+
+    public static String getDbUser() {
+        return props.getProperty("db.user");
+    }
+
+    public static String getDbPassword() {
+        return props.getProperty("db.password");
+    }
 }
