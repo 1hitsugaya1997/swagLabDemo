@@ -27,15 +27,23 @@
         <jakarta.xml.bind.version>3.0.1</jakarta.xml.bind.version>
         <jaxbRuntime.version>3.0.1</jaxbRuntime.version>
         <allureMaven.verwion>2.15.2</allureMaven.verwion>
+        <appium.version>8.5.1</appium.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.10.0</version> <!-- Или последняя стабильная версия -->
+        </dependency>
 
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
             <version>${webdrivermanager.version}</version>
         </dependency>
+
 
         <!-- JUnit 5 -->
         <dependency>
@@ -85,6 +93,13 @@
             <artifactId>lombok</artifactId>
             <version>${Lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Appium Java Client -->
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
+            <version>${appium.version}</version>
         </dependency>
 
         <!-- Allure JUnit 5 -->
