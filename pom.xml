@@ -137,6 +137,8 @@
 
     <build>
         <plugins>
+
+
             <!-- Maven Compiler Plugin -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -156,10 +158,19 @@
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
                         <include>**/*TestCase.java</include>
-                        <include>**/*Allure.java</include> <!-- Добавь если имена нестандартные -->
+                        <include>**/*Allure.java</include>
                     </includes>
+
+                    <!-- Настройки параллелизма -->
+                    <parallel>classesAndMethods</parallel>
+                    <threadCount>4</threadCount>
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
+
+                    <!-- Опционально: можно задать таймаут -->
+                    <forkedProcessTimeoutInSeconds>60</forkedProcessTimeoutInSeconds>
                 </configuration>
             </plugin>
+
 
             <!-- Allure Report Plugin -->
             <plugin>

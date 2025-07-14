@@ -13,13 +13,13 @@ import static com.ui.tests.LoginTest.logger;
 
 public class BaseTest {
 
-    @BeforeEach
-    public void setup() {
+    @BeforeAll
+    public static void globalSetup() {
+        // Один раз на весь тестовый запуск
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
 
-        // 🔧 Отключаем встроенные уведомления Chrome
         options.addArguments(
                 "--disable-popup-blocking",
                 "--disable-notifications",
@@ -31,11 +31,24 @@ public class BaseTest {
                 "--incognito"
         );
 
-        // ⬇️ Связываем кастомные опции с Selenide
         Configuration.browser = "chrome";
         Configuration.browserCapabilities = options;
-        Configuration.browserSize = null; // потому что уже стартуем в максимальном размере
+        Configuration.browserSize = null; // стартуем в максимальном размере
         Configuration.baseUrl = "https://www.saucedemo.com";
+
+        // Опционально, чтобы не создавать драйвер каждый раз заново, можно включить keepBrowserOpen:
+        // Configuration.holdBrowserOpen = false; // false по умолчанию
+    }
+
+    @BeforeEach
+    public void setup() {
+        // Открываем базовый URL перед каждым тестом
+        com.codeborne.selenide.Selenide.open("/");
+    }
+
+    @AfterEach
+    public void tearDown() {
+        WebDriverRunner.closeWebDriver();
     }
 
     @BeforeAll
@@ -46,10 +59,5 @@ public class BaseTest {
             throw new IllegalStateException("Конфигурация логина/пароля для standard_user не задана или пуста");
         }
         logger.info("Конфиг прошёл проверку. Логин: {}, пароль: <скрыт>", login);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        WebDriverRunner.closeWebDriver();
     }
 }
