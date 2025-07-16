@@ -1,41 +1,53 @@
+# 📄 Название workflow, отображается в GitHub Actions
 name: Java CI with Maven + Debug
 
+# 🧯 Триггеры — при каких событиях запускать workflow
 on:
-  push:
+  push:                     # 🔁 При пуше в указанные ветки
     branches: [ main ]
-  pull_request:
+  pull_request:             # 🔃 При создании Pull Request в эти ветки
     branches: [ main ]
-  workflow_dispatch:        # 🔧 ручной запуск из интерфейса
-  schedule:                 # ⏰ запуск по расписанию
-    - cron: '0 6 * * 1'     # каждый понедельник в 06:00 UTC
+  workflow_dispatch:        # 🔧 Ручной запуск из интерфейса GitHub
+  schedule:                 # ⏰ Плановый запуск по расписанию (CRON формат)
+    - cron: '0 6 * * 1'     # Каждый понедельник в 06:00 UTC
 
+# 🚧 Описание работы (job)
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04   # ☁️ На какой машине запускать job (виртуальное окружение GitHub)
 
     steps:
+      # 📥 Шаг 1. Склонировать репозиторий
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # ☕ Шаг 2. Установить JDK 17 (Temurin — рекомендуемая сборка OpenJDK)
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: '17'
 
+      # 💾 Шаг 3. Кешировать зависимости Maven (ускоряет сборку)
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
+          path: ~/.m2/repository             # 📦 Путь к локальному репозиторию Maven
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      # 🧪 Шаг 4. Запуск тестов Maven с расширенным логом
       - name: Run tests with debug output
         run: mvn clean verify --batch-mode -e -X || true
+        # --batch-mode: неинтерактивный режим
+        # -e: показать stacktrace ошибок
+        # -X: полный отладочный вывод
+        # || true — чтобы не прерывать выполнение, даже если тесты упали
 
+      # 📄 Шаг 5. Показать последние 100 строк из логов Surefire (даже при падении)
       - name: Display error logs from Surefire
-        if: always()
+        if: always()                         # 💡 Выполняется независимо от успешности предыдущих шагов
         run: |
           echo "=== Surefire STDERR/STDOUT Logs ==="
           for f in target/surefire-reports/*.txt; do
@@ -43,12 +55,14 @@ jobs:
             tail -n 100 "$f"
           done
 
+      # 📤 Шаг 6. Загрузить артефакты логов Surefire (JUnit отчёты)
       - name: Upload Surefire reports
         uses: actions/upload-artifact@v4
         with:
           name: surefire-reports
           path: target/surefire-reports/
 
+      # 📤 Шаг 7. Загрузить результаты Allure для генерации отчёта локально или в CI
       - name: Upload Allure results
         uses: actions/upload-artifact@v4
         with:
