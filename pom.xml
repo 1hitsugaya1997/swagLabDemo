@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.jupiter.version>5.10.0</junit.jupiter.version>
         <allure.version>2.24.0</allure.version>
-        <seselenide.version>6.19.1</seselenide.version>
+        <seselenide.version>7.9.4</seselenide.version>
         <restAssured.version>5.4.0</restAssured.version>
         <json-path.version>5.4.0</json-path.version>
         <postgresql.version>42.7.1</postgresql.version>
@@ -152,24 +152,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version> <!-- или 3.0.0+ -->
+                <version>3.2.5</version>
                 <configuration>
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
                         <include>**/*TestCase.java</include>
-                        <include>**/*Allure.java</include>
                     </includes>
-
-                    <!-- Настройки параллелизма -->
-                    <parallel>classesAndMethods</parallel>
-                    <threadCount>4</threadCount>
-                    <useUnlimitedThreads>false</useUnlimitedThreads>
-
-                    <!-- Опционально: можно задать таймаут -->
-                    <forkedProcessTimeoutInSeconds>60</forkedProcessTimeoutInSeconds>
                 </configuration>
             </plugin>
+
 
 
             <!-- Allure Report Plugin -->
