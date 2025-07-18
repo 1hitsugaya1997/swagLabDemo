@@ -28,6 +28,7 @@
         <jaxbRuntime.version>3.0.1</jaxbRuntime.version>
         <allureMaven.verwion>2.15.2</allureMaven.verwion>
         <appium.version>8.5.1</appium.version>
+        <allure.selenide.version>2.29.1</allure.selenide.version>
     </properties>
 
     <dependencies>
@@ -129,6 +130,13 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${jaxbRuntime.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-selenide -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-selenide</artifactId>
+            <version>${allure.selenide.version}</version>
         </dependency>
 
 

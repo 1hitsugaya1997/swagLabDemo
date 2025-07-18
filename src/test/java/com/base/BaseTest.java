@@ -4,26 +4,30 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.utils.TestConfig;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Semaphore;
 
+import static com.codeborne.selenide.logevents.SelenideLogger.addListener;
+
 public class BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseTest.class);
-
-    // Ограничиваем максимум 4 браузера одновременно (подкорректируй по своим ресурсам)
     private static final int COUNT_BROWSER = TestConfig.getJunitFixedParallelism();
     private static final Semaphore BROWSER_SEMAPHORE = new Semaphore(COUNT_BROWSER);
 
     @BeforeAll
     static void globalSetup() {
-        // Настройка драйвера и конфигурации
+        // ✅ Подключаем AllureSelenide Listener для автоматических скриншотов и исходного кода страницы
+        addListener("AllureSelenide", new AllureSelenide()
+                .screenshots(true)
+                .savePageSource(true)
+        );
+
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
@@ -38,15 +42,18 @@ public class BaseTest {
                 "--incognito"
         );
 
+        // 🛠️ Конфигурация Selenide
         Configuration.browser = "chrome";
         Configuration.browserCapabilities = options;
-        Configuration.browserSize = "1920x1080"; // Явно задаём размер (или null, если используешь --start-maximized)
+        Configuration.browserSize = "1920x1080";
         Configuration.baseUrl = TestConfig.getBaseUrl();
-        Configuration.reopenBrowserOnFail = false;  // Не переоткрывать браузер при падении
-        Configuration.holdBrowserOpen = false;      // Закрывать браузер после тестов
-        Configuration.timeout = 10000; // Явный таймаут
+        Configuration.reopenBrowserOnFail = false;
+        Configuration.holdBrowserOpen = false;
+        Configuration.timeout = 10000;
 
-        // Проверка конфигурации теста
+        // 📸 Указываем папку для хранения скриншотов и исходников (Selenide и Allure)
+        Configuration.reportsFolder = "build/reports/tests";
+
         String login = TestConfig.getLogin("standard_user");
         String password = TestConfig.getPassword("standard_user");
         if (login.isEmpty() || password.isEmpty()) {
@@ -59,10 +66,10 @@ public class BaseTest {
     void setup() {
         try {
             logger.info("Ожидаем разрешения для запуска браузера...");
-            BROWSER_SEMAPHORE.acquire(); // Ждем разрешения на запуск браузера (лимит параллелизма)
+            BROWSER_SEMAPHORE.acquire();
             logger.info("Разрешение получено, запускаем браузер. Поток: {}", Thread.currentThread().getName());
 
-            WebDriverRunner.clearBrowserCache(); // Очистка кеша (опционально)
+            WebDriverRunner.clearBrowserCache();
             com.codeborne.selenide.Selenide.open("/");
         } catch (InterruptedException e) {
             logger.error("Поток прерван во время ожидания разрешения запуска браузера", e);
@@ -71,13 +78,13 @@ public class BaseTest {
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown(TestInfo testInfo) {
         try {
             WebDriverRunner.closeWebDriver();
         } catch (Exception e) {
             logger.error("Ошибка при закрытии браузера: ", e);
         } finally {
-            BROWSER_SEMAPHORE.release(); // Освобождаем разрешение, чтобы другой тест мог запустить браузер
+            BROWSER_SEMAPHORE.release();
             logger.info("Разрешение на запуск браузера освобождено. Поток: {}", Thread.currentThread().getName());
         }
     }
